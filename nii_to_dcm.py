@@ -1,8 +1,10 @@
-import SimpleITK as sitk
+"""
+NIFTI file to 2D DICOM series
+"""
 
+import SimpleITK as sitk
 import sys, time, os
 import numpy as np
-
 import os
 import numpy as np
 import SimpleITK as sitk
@@ -26,8 +28,6 @@ def writeSlices(writer, series_tag_values, new_img, i):
 
     depth = new_img.GetDepth()
     image_slice = new_img[:,:,depth-i-1]
-
-    # orig_slice_path = os.path
 
     # Tags shared by the series.
     list(map(lambda tag_value: image_slice.SetMetaData(tag_value[0], tag_value[1]), series_tag_values))
@@ -60,7 +60,6 @@ def nii_to_dcm(img_path, img_name):
     new_img.CopyInformation(img)
     new_img.SetDirection((1.0,0,0,0,1.0,0,0,0,1.0))
     origin = list(new_img.GetOrigin())
-    origin[1] = -origin[1]
     new_img.SetOrigin(tuple(origin))
     writer = sitk.ImageFileWriter()
     # Use the study/series/frame of reference information given in the meta-data
