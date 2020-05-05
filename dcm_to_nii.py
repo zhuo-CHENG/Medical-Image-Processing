@@ -1,5 +1,5 @@
 """
-2D DICOM series files to NIFTI file
+2D DICOM series to NIFTI file
 """
 
 import sys, os
