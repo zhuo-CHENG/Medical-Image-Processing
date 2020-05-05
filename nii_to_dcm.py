@@ -11,19 +11,6 @@ import SimpleITK as sitk
 import argparse
 
 
-def get_IPP_tag(orig_slice_path):
-    reader = sitk.ImageFileReader()
-    reader.SetFileName(orig_slice_path)
-    reader.LoadPrivateTagsOn();
-    reader.ReadImageInformation();
-
-    k = "0020|0032"
-    v = reader.GetMetaData(k)
-    # print(v)
-    slice_IPP = tuple([float(i) for i in v.split('\\')])
-    # print(nums)
-    return slice_IPP
-
 def writeSlices(writer, series_tag_values, new_img, i):
 
     depth = new_img.GetDepth()
@@ -40,9 +27,7 @@ def writeSlices(writer, series_tag_values, new_img, i):
     image_slice.SetMetaData("0008|0060", "CT")  # set the type to CT so the thickness is carried over
 
     # (0020, 0032) image position patient determines the 3D spacing between slices.
-    # image_slice.SetMetaData("0020|0032", '\\'.join(map(str,new_img.TransformIndexToPhysicalPoint((0,0,depth-i-1))))) # Image Position (Patient)
-    image_slice.SetMetaData("0020|0032", '\\'.join(map(str, IPP_list[depth-i-1]))) # Image Position (Patient)
-
+    image_slice.SetMetaData("0020|0032", '\\'.join(map(str,new_img.TransformIndexToPhysicalPoint((0,0,depth-i-1))))) # Image Position (Patient)
     image_slice.SetMetaData("0020,0013", str(depth-i-1)) # Instance Number
 
     # Write to the output directory and add the extension dcm, to force writing in DICOM format.
@@ -168,12 +153,5 @@ if __name__ == "__main__":
         orig_slice_filename = os.listdir(orig_sub_folder)
         orig_slice_paths = [os.path.join(orig_sub_folder, filename) for filename in orig_slice_filename]
 
-        IPP_list = []
-        for orig_slice_path in orig_slice_paths:
-            IPP = get_IPP_tag(orig_slice_path)
-            IPP_list.append(IPP)
-        # print(IPP_list)
-        IPP_list = sorted(IPP_list, key=lambda element: element[2])
-        # print(IPP_list)
         nii_to_dcm(img_path, img_name)
         print("------")
