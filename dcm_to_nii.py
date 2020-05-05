@@ -1,3 +1,7 @@
+"""
+2D DICOM series files to NIFTI file
+"""
+
 import sys, os
 import numpy as np
 import SimpleITK as sitk
@@ -13,14 +17,11 @@ def dcm_to_nii(img_path, img_name):
     header = reader.Execute()
 
     # set direction
-    header.SetDirection((1.0,0,0,0,-1.0,0,0,0,1.0))
+    header.SetDirection(header.GetDirection())
     origin = list(header.GetOrigin())
-    origin[1] = -origin[1]
     header.SetOrigin(tuple(origin))
 
-    # flip the 2nd. dimention
     img_data = sitk.GetArrayFromImage(header)
-    img_data = np.flip(img_data,1)
     img_save = sitk.GetImageFromArray(img_data)
     
     # save nii image
