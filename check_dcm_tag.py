@@ -1,3 +1,7 @@
+"""
+Check the tag information of DICOM file
+"""
+
 from __future__ import print_function
 
 import SimpleITK as sitk
