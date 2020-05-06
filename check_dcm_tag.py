@@ -1,5 +1,5 @@
 """
-Check the tag information of DICOM file
+Check tag information of DICOM file
 """
 
 from __future__ import print_function
